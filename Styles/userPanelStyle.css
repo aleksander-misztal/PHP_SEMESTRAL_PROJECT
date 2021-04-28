@@ -1,0 +1,84 @@
+* {
+  padding: 0;
+  margin: 0;
+  text-decoration: none;
+  list-style: none;
+  box-sizing: border-box;
+  box-sizing: inherit;
+  transition-property: all;
+  transition-duration: 0.6s;
+  transition-timing-function: ease;
+}
+body {
+  margin: 0;
+  padding: 0;
+}
+#mainSec {
+  width: 100%;
+  height: auto;
+  min-height: 120vh;
+  background-color: transparent;
+  background: center/cover no-repeat url("IMG/main.jpg");
+}
+#vertical-align {
+  width: 100%;
+  height: auto;
+  background-color: transparent;
+  position: absolute;
+  margin-top: 200px;
+}
+#horizontal-align {
+  width: auto;
+  max-width: 500px;
+  height: auto;
+  background-color: transparent;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#databox {
+  width: 100%;
+  height: 800px;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 30px;
+  text-align: center;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+#databox input {
+  width: 150px;
+}
+#databox h1 {
+  color: white;
+  text-align: center;
+  line-height: 100px;
+  letter-spacing: 2px;
+  font-size: 30px;
+}
+#databox table {
+  margin: 0 auto 0 auto;
+}
+#databox table td {
+  border: none;
+  background-color: rgba(255, 255, 255, 0.158);
+  padding: 20px;
+}
+.userPanelButton {
+  width: 200px;
+  height: 40px;
+  line-height: 40px;
+  margin: 20px auto 0 auto;
+  background-color: rgba(255, 255, 255, 0.281);
+}
+.userPanelButton:hover{
+  border-radius: 25px;
+  color: white;
+}
+#changeDataButton:hover {
+  background-color: rgb(69, 69, 126);
+  color: white;
+}
+#deleteAccountButton:hover {
+  background-color: rgb(255, 0, 0);
+}
