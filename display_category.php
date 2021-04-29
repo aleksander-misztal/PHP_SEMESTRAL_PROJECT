@@ -73,7 +73,7 @@ $result = mysqli_query($conn, $sql); // First parameter is just return of "mysql
                 <h1>' . $title . '</h1>
                 <p id="date">' . $date . "</br>" . $row['displays_num'] . " Wyświetleń" .  '</p></br>
                 <p>' . cutArticle($content) . '... </p></br>
-                <a href="#"><div id="article-btn">Czytaj dalej</div></a>
+                <a href="display_article.php?id='.$index.'"><div id="article-btn">Czytaj dalej</div></a>
                 <p id="author">' . $author . '</p>
                  </div>
                 </div>';
