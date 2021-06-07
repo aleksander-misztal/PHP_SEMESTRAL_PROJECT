@@ -34,7 +34,7 @@ body {
   margin-right: auto;
 }
 
-#logbox {
+#regbox {
   width: 100%;
   height: auto;
   background-color: rgb(255, 255, 255);
@@ -43,18 +43,17 @@ body {
   padding-bottom: 30px;
 }
 
-#logbox h1 {
+#regbox h1 {
   color: black;
   text-align: center;
   letter-spacing: 1px;
   font-size: 25px;
   padding-top: 20px;
-  
 }
-#logbox form {
+#regbox form {
   margin-top: 30px;
 }
-#logbox form input {
+#regbox form input {
   width: 70%;
   height: 40px;
   margin-top: 10px;
@@ -63,14 +62,27 @@ body {
   border: none;
   padding-left: 10px;
 }
-#logbox form input:last-child {
+#regbox form input:last-child {
   background-color: rgb(120, 104, 141);
   color: white;
   border: none;
   margin-top: 30px;
 }
-#logbox form input:last-child:hover {
-    background-color: rgb(81, 57, 112);
-    color: white;
-    border-radius: 25px;
-  }
+#regbox form input:last-child:hover {
+  background-color: rgb(81, 57, 112);
+  color: white;
+  border-radius: 25px;
+}
+#regbox form textarea {
+  width: 70%;
+  min-width: 70%;
+  max-width: 70%;
+  height: 40px;
+  min-height: 100px;
+  max-height: 40vh;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background-color: rgb(225, 229, 235);
+  border: none;
+  padding-left: 10px;
+}

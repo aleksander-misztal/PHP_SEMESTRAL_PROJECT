@@ -37,38 +37,34 @@ body {
 #regbox {
   width: 100%;
   height: auto;
-  background-color: rgba(255, 255, 255, 0.300);
-  border-radius: 30px;
+  background-color: rgb(255, 255, 255);
+  border-radius: 7px;
   text-align: center;
   padding-bottom: 30px;
 }
-#regbox-pic {
-  width: 100%;
-  height: 100px;
-  background-color: transparent;
-  border-top-left-radius: 25px;
-  border-top-right-radius: 25px;
-  background: center/cover no-repeat url("IMG/logbox-pic3.jpg");
-}
-#regbox-pic h1 {
-  color: white;
-  line-height: 100px;
-  letter-spacing: 2px;
-  font-size: 30px;
+
+#regbox h1 {
+  color: black;
+  text-align: center;
+  letter-spacing: 1px;
+  font-size: 25px;
+  padding-top: 20px;
 }
 #regbox form {
-  margin-top: 50px;
+  margin-top: 30px;
 }
 #regbox form input {
   width: 70%;
   height: 40px;
   margin-top: 10px;
   margin-bottom: 10px;
-  background-color: rgba(255, 255, 255, 0.158);
+  background-color: rgb(225, 229, 235);
   border: none;
   padding-left: 10px;
 }
 #regbox form input:last-child {
+  background-color: rgb(120, 104, 141);
+  color: white;
   border: none;
   margin-top: 30px;
 }

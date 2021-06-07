@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once 'navbarVersions.php';
-require_once 'pdo.php';
+require_once 'conn.php';
 require_once 'func.php';
 if (!isset($_SESSION['nick'])) {
     session_destroy();
@@ -21,10 +21,11 @@ if ($basePass->num_rows > 0) {
 } else {
     echo "błędny login";
 }
-$conn->close();
+
 ?>
 <!DOCTYPE html>
 <html lang="pl-PL">
+
 <head>
     <meta charset="UTF-8">
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -42,8 +43,9 @@ $conn->close();
         require 'Styles/footer.css';
         ?>
     </style>
-    <title>WPRBEJBE</title>
+    <title>PROJEKT WPR</title>
 </head>
+
 <body>
     <section id="mainSec">
         <nav>
@@ -51,11 +53,15 @@ $conn->close();
             <label for="check" class="checkbtn">
                 <i class="fas fa-bars"></i>
             </label>
-            <label class="logo">WPRBEJBE</label>
+            <label class="logo">PROJEKT WPR</label>
             <ul>
                 <?php
                 if (isset($_SESSION['nick'])) {
-                    echo $loggedInList;
+                    if ($_SESSION['level'] == 0) {
+                        echo $levelZeroList;
+                    } else {
+                        echo $levelsOverZeroList;
+                    }
                 }
                 if (!isset($_SESSION['nick'])) {
                     echo $loggedOutList;
@@ -80,8 +86,69 @@ $conn->close();
                         <div class="userPanelButton" id="deleteAccountButton">Usuń konto</div>
                     </a>
                     <h1>Twoje komentarze</h1>
+                    <table>
+                        <tr>
+                            <th>Ocena</th>
+                            <th>Komentarz</th>
+                            <th>Data</th>
+                            <th>Akcja</th>
+                        </tr>
+                        <?php
+                        $searchCommsQuery = "SELECT id_comm,mark,comment,date FROM comments WHERE id_user='$nick'";
+                        $searchComms = mysqli_query($conn, $searchCommsQuery);
+                        while ($row = mysqli_fetch_assoc($searchComms)) {
+                            $id_comm = $row['id_comm'];
+                            $mark = $row['mark'];
+                            $comment = $row['comment'];
+                            $date = $row['date'];
+                            echo '<tr>';
+                            echo '<td>' . $mark . '</td>';
+                            echo '<td>' . $comment . '</td>';
+                            echo '<td>' . $date . '</td>';
+                            echo '<td><a href="changeComment.php?id=' . $id_comm . '">edytuj</a>/<a href="deleteComment.php?id=' . $id_comm . '">usuń</a></td>';
+                        }
+
+
+                        ?>
+
+
+                    </table>
+                    <?php
+                    if ($_SESSION['level'] > 0) {
+                        echo '<h1>Twoje Artykuły</h1>
+                            <table>
+                            <tr>
+                                <th>Kategoria</th>
+                                <th>Wyś</th>
+                                <th>Tytuł</th>
+                                <th>Data</th>
+                                <th>Akcja</th>
+                            </tr>';
+
+                        $searchArticlesQuery = "SELECT id_article,category,title,date,displays_num FROM article WHERE nick='$nick'";
+                        $searchArticles = mysqli_query($conn, $searchArticlesQuery);
+                        while ($row = mysqli_fetch_assoc($searchArticles)) {
+                            $id_article = $row['id_article'];
+                            $category = $row['category'];
+                            $displays_num = $row['displays_num'];
+                            $title = $row['title'];
+                            $date = $row['date'];
+                            echo '<tr>';
+                            echo '<td>' . $category . '</td>';
+                            echo '<td>' . $displays_num . '</td>';
+                            echo '<td>' . $title . '</td>';
+                            echo '<td>' . $date . '</td>';
+                            echo '<td><a href="changeArticle.php?id=' . $id_article . '">edytuj</a>/<a href="deleteArticle.php?id=' . $id_article . '">usuń</a></td>';
+                        }
+                    }
+                    ?>
+
+
+                    </table>
                 </div>
             </div>
         </div>
+
 </body>
+
 </html>

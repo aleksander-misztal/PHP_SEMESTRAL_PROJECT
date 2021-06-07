@@ -6,7 +6,11 @@ if (!isset($_SESSION['nick'])) {
 }
 $nick = $_SESSION['nick'];
 
-require_once 'pdo.php';
+
+
+
+
+require_once 'conn.php';
 require_once 'navbarVersions.php';
 require_once 'func.php';
 
@@ -21,12 +25,33 @@ if ($basePass->num_rows > 0) {
         $password = $row['password'];
     }
 }
-//Zaktualizuj dane
-changeData($conn, $nick);
+if (isset($_POST['nick']) and isset($_POST['name']) and isset($_POST['surname']) and isset($_POST['email']) and isset($_POST['password'])) {
+    $newNick = $_POST['nick'];
+    $newName = $_POST['name'];
+    $newSurname = $_POST['surname'];
+    $newEmail = $_POST['email'];
+    $newPassword = $_POST['password'];
+    //FORMATOWANIE
+    $newName = strtolower($newName);
+    $newName = ucfirst($newName);
+    $newSurname = strtolower($newSurname);
+    $newSurname = ucfirst($newSurname);
+    
+    $sql = "UPDATE users SET nick='$newNick' ,  name='$newName'  ,  surname ='$newSurname'  ,  email='$newEmail'  ,  password='$newPassword'  WHERE nick='$nick'";
+
+    if ($conn->query($sql) === TRUE) {
+        $_SESSION['nick'] = $newNick;
+        header('location:userPanel.php');
+    } else {
+        echo "Error updating record: " . $conn->error;
+    }
+    $conn->close();
+}
 
 ?>
 <!DOCTYPE html>
 <html lang="pl-PL">
+
 <head>
     <meta charset="UTF-8">
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -44,8 +69,9 @@ changeData($conn, $nick);
         require 'Styles/footer.css';
         ?>
     </style>
-    <title>WPRBEJBE</title>
+    <title>WPR PROJEKT</title>
 </head>
+
 <body>
     <section id="mainSec">
         <nav>
@@ -53,25 +79,28 @@ changeData($conn, $nick);
             <label for="check" class="checkbtn">
                 <i class="fas fa-bars"></i>
             </label>
-            <label class="logo">WPRBEJBE</label>
+            <label class="logo">PROJEKT WPR</label>
             <ul>
                 <?php
                 if (isset($_SESSION['nick'])) {
-                    echo $loggedInList;
+                    if ($_SESSION['level'] == 0) {
+                        echo $levelZeroList;
+                    } else {
+                        echo $levelsOverZeroList;
+                    }
                 }
                 if (!isset($_SESSION['nick'])) {
                     echo $loggedOutList;
                 }
                 ?>
-
             </ul>
         </nav>
         <div id="vertical-align">
             <div id="horizontal-align">
                 <div id="databox">
-                    <div id="databox-pic">
-                        <h1>Zmień dane</h1>
-                    </div>
+
+                    <h1>Zmień dane</h1>
+
                     <form id="changeDataForm" method="post">
                         <label for="nick">Nick:</label></br>
                         <input type="text" id="nick" name="nick" placeholder="nick" value="<?php echo $nick; ?>"></br>
@@ -89,5 +118,8 @@ changeData($conn, $nick);
             </div>
         </div>
         </div>
+
+
 </body>
+
 </html>

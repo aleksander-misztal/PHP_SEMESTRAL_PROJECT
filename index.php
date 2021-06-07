@@ -23,7 +23,7 @@ require_once 'navbarVersions.php';
         require 'Styles/footer.css';
         ?>
     </style>
-    <title>WPRBEJBE</title>
+    <title>PROJEKT WPR</title>
 </head>
 
 <body>
@@ -33,11 +33,16 @@ require_once 'navbarVersions.php';
             <label for="check" class="checkbtn">
                 <i class="fas fa-bars"></i>
             </label>
-            <label class="logo">WPRBEJBE</label>
+            <label class="logo">PROJEKT WPR</label>
             <ul>
                 <?php
                 if (isset($_SESSION['nick'])) {
-                    echo $loggedInList;
+                    if($_SESSION['level']==0){
+                        echo $levelZeroList;
+                    }
+                    else{
+                        echo $levelsOverZeroList;
+                    }
                 }
                 if (!isset($_SESSION['nick'])) {
                     echo $loggedOutList;
@@ -90,25 +95,18 @@ require_once 'navbarVersions.php';
 
     <footer>
         <div class="footer-tags">
-            <ul>
-                <li><a href="#"><i class="fa fab fa-facebook"></i></a></li>
-                <li><a href="#"><i class="fa fab fa-twitter"></i></a></li>
-
-
-            </ul>
+            <a href="#" id="fb-link"> <i class="fa fab fa-facebook-square"></i></a>
+            <a href="#" id="insta-link"> <i class="fa fab fa-instagram"></i></a>
         </div>
         <div class="footer-links">
-            <ul>
-                <li><a href="display_category.php?category=f1">F1</a></li>
-                <li><a href="display_category.php?category=f2">F2</a></li>
-                <li><a href="display_category.php?category=ufc">UFC</a></li>
-                <li><a href="display_category.php?category=vor">Volvo ocean race</a></li>
-
-                <li><a href="terms.php">Regulamin</a></li>
-            </ul>
+            <a href="index.php"> Home</a>
+            <a href="display_category.php?category=Formula1"> F1</i></a>
+            <a href="display_category.php?category=Formula2"> F2</i></a>
+            <a href="display_category.php?category=UFC"> UFC</a>
+            <a href="display_category.php?category=VolvoOceanRace"> Volvo Ocean Race</a>
         </div>
         <div class="footer-copyright">
-            <p>GEEKBROS © 2020</p>
+            <p>WPR Project © 2021</p>
         </div>
     </footer>
 

@@ -1,34 +1,26 @@
 <?php
 session_start();
-require_once 'conn.php';
-require_once 'func.php';
-require_once 'navbarVersions.php';
-if (isset($_SESSION['nick'])) {
+if (!isset($_SESSION['nick']) or !isset($_GET['id'])) {
     header('location:index.php');
 }
+$nick = $_SESSION['nick'];
+$id_comm = $_GET['id'];
+require_once 'conn.php';
+require_once 'navbarVersions.php';
+require_once 'func.php';
 
-if (isset($_POST['nick']) and isset($_POST['password'])) {
-
-    $nick = $_POST['nick'];
-    $password = $_POST['password'];
-    $loginErrorMessage = null;
-    $sql = "SELECT password,level FROM users WHERE nick='$nick'";
-    $basePass = $conn->query($sql);
-    if ($basePass->num_rows > 0) {
-        while ($row = $basePass->fetch_assoc()) {
-            if ($password == $row["password"]) {
-                $_SESSION['nick'] = $nick;
-                $_SESSION['level'] = $row["level"];
-                header("location:index.php");
-            }
-            if ($password != $row["password"]) {
-                $loginErrorMessage = "złe hasło";
-            }
-        }
-    } else {
-        $loginErrorMessage = "błędny login";
+//Wpisz dane konta do formularza
+$sql = "SELECT * FROM comments WHERE id_comm='$id_comm'";
+$basePass = $conn->query($sql);
+if ($basePass->num_rows > 0) {
+    while ($row = $basePass->fetch_assoc()) {
+        $mark = $row['mark'];
+        $comment = $row['comment'];
     }
 }
+//Zaktualizuj dane
+changeComment($conn, $id_comm);
+
 ?>
 <!DOCTYPE html>
 <html lang="pl-PL">
@@ -45,13 +37,12 @@ if (isset($_POST['nick']) and isset($_POST['password'])) {
     <meta name="keywords" content="...">
     <style>
         <?php
-        require 'Styles/loginStyle.css';
+        require 'Styles/changeComment.css';
         require 'Styles/header.css';
         require 'Styles/footer.css';
-
         ?>
     </style>
-    <title>PROJEKT WPR</title>
+    <title>WPRBEJBE</title>
 </head>
 
 <body>
@@ -61,7 +52,7 @@ if (isset($_POST['nick']) and isset($_POST['password'])) {
             <label for="check" class="checkbtn">
                 <i class="fas fa-bars"></i>
             </label>
-            <label class="logo">PROJEKT WPR</label>
+            <label class="logo">WPRBEJBE</label>
             <ul>
                 <?php
                 if (isset($_SESSION['nick'])) {
@@ -77,26 +68,31 @@ if (isset($_POST['nick']) and isset($_POST['password'])) {
                 ?>
             </ul>
         </nav>
-
         <div id="vertical-align">
             <div id="horizontal-align">
-                <div id="logbox">
-                    <h1>Zaloguj się</h1>
+                <div id="regbox">
+                    
+                        <h1>Edytuj Komentarz</h1>
+                   
                     <form id="loginForm" method="post">
-                        <input type="login" id="nick" name="nick" placeholder="nick"></br>
-                        <input type="password" id="password" name="password" placeholder="hasło">
-                        <?php
-                        if (isset($loginErrorMessage)) {
-                            echo '</br><label style="color:red">' . $loginErrorMessage . '</label>';
-                        }
-                        ?>
-                        </br><input type="submit" id="submit" value="Zaloguj">
+                        <label for="oceny">Ocena:</label></br>
+
+                        <select name="oceny" id="oceny">
+                            <?php
+                            for ($i = 10; $i >= 1; $i--) {
+                                echo ' <option value="' . $i . '">' . $i . '</option>';
+                            }
+                            ?>
+                        </select></br>
+                        <textarea type="text" id="komentarz" name="komentarz" placeholder="<?php echo $comment; ?>"></textarea></br>
+                        <input type="submit" id="submit" value="Uaktualnij">
                     </form>
-                    <a href="register.php">Rejestracja</a>
+
                 </div>
             </div>
         </div>
         </div>
+
 
 </body>
 

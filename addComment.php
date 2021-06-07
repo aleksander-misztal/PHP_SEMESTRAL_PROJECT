@@ -1,34 +1,34 @@
 <?php
 session_start();
+#Sprawdza czy wiadomo o ktory art chodzi
+if (!isset($_GET['id'])) {
+    header("location:index.php");
+} else {
+    $id_article = $_GET['id'];
+}
+if (!isset($_SESSION['nick'])) {
+    header("location:login.php");
+}
 require_once 'conn.php';
 require_once 'func.php';
 require_once 'navbarVersions.php';
-if (isset($_SESSION['nick'])) {
-    header('location:index.php');
-}
+if (isset($_POST['oceny']) and isset($_POST['komentarz'])) {
+    $nick = $_SESSION['nick'];
+    $mark = $_POST['oceny'];
+    $comment = $_POST['komentarz'];
+    $date = date('Y-m-d');
 
-if (isset($_POST['nick']) and isset($_POST['password'])) {
-
-    $nick = $_POST['nick'];
-    $password = $_POST['password'];
-    $loginErrorMessage = null;
-    $sql = "SELECT password,level FROM users WHERE nick='$nick'";
-    $basePass = $conn->query($sql);
-    if ($basePass->num_rows > 0) {
-        while ($row = $basePass->fetch_assoc()) {
-            if ($password == $row["password"]) {
-                $_SESSION['nick'] = $nick;
-                $_SESSION['level'] = $row["level"];
-                header("location:index.php");
-            }
-            if ($password != $row["password"]) {
-                $loginErrorMessage = "złe hasło";
-            }
-        }
+    $sql = "INSERT INTO comments (id_article, id_user, mark,comment,date) VALUES ('$id_article' , '$nick' , '$mark' , '$comment','$date')";
+    if ($conn->query($sql) === TRUE) {
+        echo "New record created successfully";
+        header("location:display_article.php?id=$id_article");
     } else {
-        $loginErrorMessage = "błędny login";
+        echo "Error: " . $sql . "<br>" . $conn->error;
     }
+    $conn->close();
 }
+
+
 ?>
 <!DOCTYPE html>
 <html lang="pl-PL">
@@ -45,13 +45,12 @@ if (isset($_POST['nick']) and isset($_POST['password'])) {
     <meta name="keywords" content="...">
     <style>
         <?php
-        require 'Styles/loginStyle.css';
+        require 'Styles/addComment.css';
         require 'Styles/header.css';
         require 'Styles/footer.css';
-
         ?>
     </style>
-    <title>PROJEKT WPR</title>
+    <title>WPRBEJBE</title>
 </head>
 
 <body>
@@ -61,7 +60,7 @@ if (isset($_POST['nick']) and isset($_POST['password'])) {
             <label for="check" class="checkbtn">
                 <i class="fas fa-bars"></i>
             </label>
-            <label class="logo">PROJEKT WPR</label>
+            <label class="logo">WPRBEJBE</label>
             <ul>
                 <?php
                 if (isset($_SESSION['nick'])) {
@@ -80,19 +79,24 @@ if (isset($_POST['nick']) and isset($_POST['password'])) {
 
         <div id="vertical-align">
             <div id="horizontal-align">
-                <div id="logbox">
-                    <h1>Zaloguj się</h1>
+                <div id="regbox">
+                    
+                        <h1>Podziel się opinią</h1>
+                    
                     <form id="loginForm" method="post">
-                        <input type="login" id="nick" name="nick" placeholder="nick"></br>
-                        <input type="password" id="password" name="password" placeholder="hasło">
-                        <?php
-                        if (isset($loginErrorMessage)) {
-                            echo '</br><label style="color:red">' . $loginErrorMessage . '</label>';
-                        }
-                        ?>
-                        </br><input type="submit" id="submit" value="Zaloguj">
+                        <label for="oceny">Ocena:</label>
+
+                        <select name="oceny" id="oceny">
+                            <?php
+                            for ($i = 10; $i >= 1; $i--) {
+                                echo ' <option value="' . $i . '">' . $i . '</option>';
+                            }
+                            ?>
+                        </select></br>
+                        <textarea type="text" id="komentarz" name="komentarz" placeholder="komentarz"></textarea></br>
+                        <input type="submit" id="submit" value="Przeslij">
                     </form>
-                    <a href="register.php">Rejestracja</a>
+
                 </div>
             </div>
         </div>

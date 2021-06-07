@@ -1,58 +1,44 @@
 <?php
-function login($nick, $password, $conn)
+
+function checkIfNickExists($conn, $nick)
 {
-    $sql = "SELECT password FROM users WHERE nick='$nick'";
-    $basePass = $conn->query($sql);
-    if ($basePass->num_rows > 0) {
-        while ($row = $basePass->fetch_assoc()) {
-            if ($password == $row["password"]) {
-                echo "zalogowano";
-                $_SESSION['nick'] = $nick;
-                header("location:index.php");
-            }
-            if ($password != $row["password"]) {
-                echo "zle haslo";
+    $checkIfNickExistsQuery = "SELECT * FROM users WHERE nick='$nick'";
+    $checkIfNickExists = $conn->query($checkIfNickExistsQuery);
+    if ($checkIfNickExists->num_rows > 0) {
+        while ($row = $checkIfNickExists->fetch_assoc()) {
+            if ($nick == $row["nick"]) {
+                $_SESSION['registerErrorMessage'] = $nick;
+                header("location:register.php");
             }
         }
-    } else {
-        echo "błędny login";
     }
-    $conn->close();
 }
-function register($conn)
+
+function changeComment($conn, $id)
 {
-    if (isset($_POST['nick']) and isset($_POST['name']) and isset($_POST['surname']) and isset($_POST['email']) and isset($_POST['password']) and isset($_POST['check_password'])) {
-        $nick = $_POST['nick'];
-        $name = $_POST['name'];
-        $surname = $_POST['surname'];
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-        $check_password = $_POST['check_password'];
-        $accountLevel = 0;
-        $sql = "INSERT INTO users (nick, name, surname,email,password,level) VALUES ('$nick' , '$name' , '$surname' , '$email','$password','$accountLevel')";
+    if (isset($_POST['oceny']) and isset($_POST['komentarz'])) {
+        $mark = $_POST['oceny'];
+        $comment = $_POST['komentarz'];
+        $newDate =  date('Y-m-d');
+        $sql = "UPDATE comments SET mark='$mark' ,  comment='$comment'  ,  date ='$newDate' WHERE id_comm='$id'";
         if ($conn->query($sql) === TRUE) {
-            echo "New record created successfully";
-            $_SESSION['nick'] = $nick;
-            header("location:userPanel.php");
+            header('location:index.php');
         } else {
-            echo "Error: " . $sql . "<br>" . $conn->error;
+            echo "Error updating record: " . $conn->error;
         }
         $conn->close();
     }
 }
-function changeData($conn, $nick)
+function changeArticle($conn, $id_article)
 {
-    if (isset($_POST['nick']) and isset($_POST['name']) and isset($_POST['surname']) and isset($_POST['email']) and isset($_POST['password'])) {
-        $newNick = $_POST['nick'];
-        $newName = $_POST['name'];
-        $newSurname = $_POST['surname'];
-        $newEmail = $_POST['email'];
-        $newPassword = $_POST['password'];
-        $sql = "UPDATE users SET nick='$newNick' ,  name='$newName'  ,  surname ='$newSurname'  ,  email='$newEmail'  ,  password='$newPassword'  WHERE nick='$nick'";
-
+    if (isset($_POST['categories']) and isset($_POST['title']) and isset($_POST['content'])) {
+        $category = $_POST['categories'];
+        $title = $_POST['title'];
+        $content =  $_POST['content'];
+        $newDate =  date('Y-m-d');
+        $sql = "UPDATE article SET category='$category' ,  title='$title',  content='$content'  ,  date ='$newDate' WHERE id_article='$id_article'";
         if ($conn->query($sql) === TRUE) {
-            $_SESSION['nick'] = $newNick;
-            header('location:userPanel.php');
+            header('location:index.php');
         } else {
             echo "Error updating record: " . $conn->error;
         }
@@ -62,4 +48,30 @@ function changeData($conn, $nick)
 function createDataTable($nick, $name, $surname, $email, $password)
 {
     return "<tr><td>Nick</td><td>$nick</td></tr><tr><td>Imię</td><td>$name</td></tr><tr><td>Nazwisko</td><td>$surname</td></tr><tr><td>Email</td><td>$email</td></tr><tr><td>Hasło</td><td>$password</td></tr>";
+}
+function checkIfDisplayed($id)
+{
+    $cookieName = "displayedArticle" . $id;
+    if (isset($_COOKIE[$cookieName])) {
+        return true;
+    } else {
+        return false;
+    }
+}
+function addDisplay($id, $conn)
+{
+    $cookieName = "displayedArticle" . $id;
+    $searchDisplaysQuery = "SELECT displays_num FROM article WHERE id_article='$id'";
+    $searchDisplays = mysqli_query($conn, $searchDisplaysQuery);
+    while ($row = mysqli_fetch_assoc($searchDisplays)) { // Important line !!! Check summary get row on array ..
+        $displays_num = $row['displays_num'];
+    }
+    $newDisplaysNum = $displays_num + 1;
+    $UpdateDisplaysNumQuery = "UPDATE article SET displays_num='$newDisplaysNum'  WHERE id_article='$id'";
+    if ($conn->query($UpdateDisplaysNumQuery) === TRUE) {
+        setcookie($cookieName, 1);
+        header("location:display_article.php?id=$id");
+    } else {
+        echo "Error updating record: " . $conn->error;
+    }
 }
